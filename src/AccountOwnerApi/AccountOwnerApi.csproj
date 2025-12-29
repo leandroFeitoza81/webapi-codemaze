@@ -12,6 +12,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.1" />
+    <PackageReference Include="NLog" Version="6.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Contracts\Contracts.csproj" />
+    <ProjectReference Include="..\LoggerService\LoggerService.csproj" />
   </ItemGroup>
 
 </Project>

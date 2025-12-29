@@ -1,6 +1,6 @@
 @AccountOwnerApi_HostAddress = http://localhost:5098
 
-GET {{AccountOwnerApi_HostAddress}}/weatherforecast/
+GET {{AccountOwnerApi_HostAddress}}/api/Teste
 Accept: application/json
 
 ###

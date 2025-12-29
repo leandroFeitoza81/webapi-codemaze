@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http;
+using Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccountOwnerApi.Controllers
@@ -7,7 +7,18 @@ namespace AccountOwnerApi.Controllers
     [ApiController]
     public class TesteController : ControllerBase
     {
+        private readonly ILoggerManager _logger;
+
+        public TesteController(ILoggerManager logger)
+        {
+            _logger = logger;
+        }
+
         [HttpGet]
-        public IActionResult Get() => Ok("Hello World!");
+        public IActionResult Get()
+        {
+            _logger.LogInfo("Testando log");
+            return Ok("Testando log");
+        }
     }
 }
