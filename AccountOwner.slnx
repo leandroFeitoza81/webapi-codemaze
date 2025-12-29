@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/AccountOwnerApi/AccountOwnerApi.csproj" />
+    <Project Path="src/Contracts/Contracts.csproj" />
+    <Project Path="src/LoggerService/LoggerService.csproj" />
   </Folder>
 </Solution>

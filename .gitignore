@@ -364,3 +364,7 @@ FodyWeavers.xsd
 
 #Folder for Jetbrains Rider
 .idea/
+
+src/AccountOwnerApi/appsettings.Development.json
+
+src/AccountOwnerApi/nlog.config
