@@ -1,6 +1,6 @@
 using AccountOwnerApi.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
-using NLog;
+using Serilog;
 
 namespace AccountOwnerApi;
 
@@ -8,36 +8,54 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
-        LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .CreateBootstrapLogger();
 
-        // Add services to the container.
-        builder.Services.AddCors();
-        builder.Services.ConfigureLoggerService();
-        
-        builder.Services.AddControllers();
-
-        var app = builder.Build();
-
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-            app.UseDeveloperExceptionPage();
-        else
-            app.UseHsts();
-
-        app.UseHttpsRedirection();
-        
-        app.UseStaticFiles();
-
-        app.UseForwardedHeaders(new ForwardedHeadersOptions()
+        try
         {
-            ForwardedHeaders = ForwardedHeaders.All
-        });
+            Log.Information("Starting up");
 
-        app.UseAuthorization();
-        
-        app.MapControllers();
+            var builder = WebApplication.CreateBuilder(args);
 
-        app.Run();
+            builder.Host.UseSerilog((context, services, configuration) =>  configuration
+                .ReadFrom.Configuration(context.Configuration)
+                .ReadFrom.Services(services)
+                .Enrich.FromLogContext()
+            );
+            
+            builder.Services.AddCors();
+            builder.Services.ConfigureLoggerService();
+
+            builder.Services.AddControllers();
+
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+                app.UseDeveloperExceptionPage();
+            else
+                app.UseHsts();
+
+            app.UseSerilogRequestLogging();
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions()
+            {
+                ForwardedHeaders = ForwardedHeaders.All
+            });
+            app.UseAuthorization();
+            app.MapControllers();
+            app.Run();
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Application terminated unexpectedly");
+            throw;
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
     }
 }
